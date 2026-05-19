@@ -67,6 +67,26 @@ frontend/
 - Формы: react-hook-form + zod (схемы в `features/<name>/model/schemas.ts`)
 - Токены хранятся в `localStorage` (`access_token`, `refresh_token`)
 
+## Git Branch Strategy — GitHub Flow
+
+Используем **GitHub Flow**: единственная долгоживущая ветка — `main`, вся работа ведётся в коротких фича-ветках.
+
+### Правила веток
+- `main` — всегда стабильна и деплоится; прямые коммиты в неё запрещены.
+- Новая фича или исправление → новая ветка от `main`.
+- Именование: `feature/<name>`, `fix/<name>`, `chore/<name>` (kebab-case, кратко).
+- Ветка живёт только на время разработки фичи; после мержа удаляется.
+- Перед слиянием в `main` — Pull Request (code review / обсуждение).
+- Ветку держать актуальной: регулярно делать `git merge main` или `git rebase main`.
+
+### Примеры имён веток
+```
+feature/main-page
+feature/expenses-list
+fix/auth-token-refresh
+chore/update-dependencies
+```
+
 ## Git Commit Convention
 
 Используем **Conventional Commits**. Формат: `<type>(<scope>): <description>`
