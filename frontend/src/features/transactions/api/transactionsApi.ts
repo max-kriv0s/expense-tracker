@@ -28,7 +28,4 @@ export const transactionsApi = {
 
   create: (token: string, payload: CreateTransactionPayload) =>
     apiClient.post<Transaction>('/transactions', payload, token),
-
-  createCategory: (token: string, name: string) =>
-    apiClient.post<Category>('/categories', { name }, token),
 };

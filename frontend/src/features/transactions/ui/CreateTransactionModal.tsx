@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Plus, Check, X } from 'lucide-react';
 import { Dialog } from '@/shared/ui/dialog';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
@@ -18,7 +17,6 @@ type CreateTransactionModalProps = {
   onClose: () => void;
   onCreated: (tx: Transaction) => void;
   categories: Category[];
-  onCategoryCreated: (cat: Category) => void;
   token: string;
 };
 
@@ -29,13 +27,9 @@ export function CreateTransactionModal({
   onClose,
   onCreated,
   categories,
-  onCategoryCreated,
   token,
 }: CreateTransactionModalProps) {
   const [serverError, setServerError] = useState<string | null>(null);
-  const [showNewCategory, setShowNewCategory] = useState(false);
-  const [newCategoryName, setNewCategoryName] = useState('');
-  const [categoryLoading, setCategoryLoading] = useState(false);
 
   const {
     register,
@@ -54,25 +48,7 @@ export function CreateTransactionModal({
   const handleClose = () => {
     reset({ type: 'EXPENSE', date: today() });
     setServerError(null);
-    setShowNewCategory(false);
-    setNewCategoryName('');
     onClose();
-  };
-
-  const handleCreateCategory = async () => {
-    if (!newCategoryName.trim()) return;
-    setCategoryLoading(true);
-    try {
-      const cat = await transactionsApi.createCategory(token, newCategoryName.trim());
-      onCategoryCreated(cat);
-      setValue('categoryId', cat.id);
-      setShowNewCategory(false);
-      setNewCategoryName('');
-    } catch (err) {
-      setServerError(err instanceof Error ? err.message : 'Ошибка создания категории');
-    } finally {
-      setCategoryLoading(false);
-    }
   };
 
   const onSubmit = async (data: CreateTransactionFormData) => {
@@ -128,50 +104,14 @@ export function CreateTransactionModal({
 
         {/* Категория */}
         <div className="space-y-1">
-          <div className="flex items-center justify-between">
-            <Label htmlFor="categoryId">Категория</Label>
-            {!showNewCategory && (
-              <button
-                type="button"
-                onClick={() => setShowNewCategory(true)}
-                className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
-              >
-                <Plus className="w-3 h-3" />
-                Новая
-              </button>
-            )}
-          </div>
-
-          {showNewCategory ? (
-            <div className="flex gap-2">
-              <Input
-                autoFocus
-                placeholder="Название категории"
-                value={newCategoryName}
-                onChange={(e) => setNewCategoryName(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') { e.preventDefault(); handleCreateCategory(); }
-                  if (e.key === 'Escape') { setShowNewCategory(false); setNewCategoryName(''); }
-                }}
-              />
-              <Button
-                type="button"
-                size="icon"
-                variant="outline"
-                onClick={handleCreateCategory}
-                disabled={categoryLoading || !newCategoryName.trim()}
-              >
-                <Check className="w-4 h-4" />
-              </Button>
-              <Button
-                type="button"
-                size="icon"
-                variant="ghost"
-                onClick={() => { setShowNewCategory(false); setNewCategoryName(''); }}
-              >
-                <X className="w-4 h-4" />
-              </Button>
-            </div>
+          <Label htmlFor="categoryId">Категория</Label>
+          {categories.length === 0 ? (
+            <p className="text-sm text-muted-foreground py-2">
+              Нет категорий — сначала создайте их на странице{' '}
+              <a href="/dashboard/categories" className="underline hover:text-foreground">
+                Категории
+              </a>
+            </p>
           ) : (
             <select
               id="categoryId"
@@ -186,7 +126,6 @@ export function CreateTransactionModal({
               ))}
             </select>
           )}
-
           {errors.categoryId && (
             <p className="text-xs text-destructive">{errors.categoryId.message}</p>
           )}
@@ -211,7 +150,7 @@ export function CreateTransactionModal({
           <Button type="button" variant="outline" onClick={handleClose}>
             Отмена
           </Button>
-          <Button type="submit" disabled={isSubmitting}>
+          <Button type="submit" disabled={isSubmitting || categories.length === 0}>
             {isSubmitting ? 'Сохранение...' : 'Создать'}
           </Button>
         </div>

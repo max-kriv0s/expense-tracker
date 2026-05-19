@@ -148,7 +148,6 @@ export default function DashboardPage() {
           open={isModalOpen}
           onClose={() => setIsModalOpen(false)}
           onCreated={handleTransactionCreated}
-          onCategoryCreated={(cat) => setCategories((prev) => [...prev, cat])}
           categories={categories}
           token={token}
         />
