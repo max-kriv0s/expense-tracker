@@ -2,10 +2,13 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { Plus } from 'lucide-react';
 import { transactionsApi } from '@/features/transactions/api/transactionsApi';
 import { SummaryCards } from '@/features/transactions/ui/SummaryCards';
 import { TransactionFilters } from '@/features/transactions/ui/TransactionFilters';
 import { TransactionList } from '@/features/transactions/ui/TransactionList';
+import { CreateTransactionModal } from '@/features/transactions/ui/CreateTransactionModal';
+import { Button } from '@/shared/ui/button';
 import { ApiError } from '@/shared/api/client';
 import type { Transaction, TransactionSummary } from '@/entities/transaction/model/types';
 import type { Category } from '@/entities/category/model/types';
@@ -26,6 +29,7 @@ export default function DashboardPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const stored = localStorage.getItem('access_token');
@@ -73,6 +77,19 @@ export default function DashboardPage() {
     setCurrentPage(1);
   };
 
+  const handleTransactionCreated = (tx: Transaction) => {
+    setTransactions((prev) => [tx, ...prev]);
+    setIsModalOpen(false);
+    // обновляем сводку
+    if (token) {
+      const now = new Date();
+      transactionsApi
+        .getSummary(token, now.getMonth() + 1, now.getFullYear())
+        .then(setSummary)
+        .catch(() => null);
+    }
+  };
+
   if (token === null) return null;
 
   const filteredTransactions =
@@ -96,27 +113,45 @@ export default function DashboardPage() {
   }
 
   return (
-    <div>
-      <h1 className="text-2xl font-semibold mb-6 capitalize">Обзор за {monthLabel}</h1>
-
-      <SummaryCards summary={summary} isLoading={isLoading} />
-
-      <div className="mt-8">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-medium">Транзакции</h2>
-          <TransactionFilters activeFilter={filter} onChange={handleFilterChange} />
+    <>
+      <div>
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-2xl font-semibold capitalize">Обзор за {monthLabel}</h1>
+          <Button onClick={() => setIsModalOpen(true)}>
+            <Plus className="w-4 h-4 mr-2" />
+            Новая транзакция
+          </Button>
         </div>
 
-        <TransactionList
-          transactions={filteredTransactions}
-          categories={categories}
-          isLoading={isLoading}
-          currentPage={currentPage}
-          pageSize={10}
-          totalItems={filteredTransactions.length}
-          onPageChange={setCurrentPage}
-        />
+        <SummaryCards summary={summary} isLoading={isLoading} />
+
+        <div className="mt-8">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-medium">Транзакции</h2>
+            <TransactionFilters activeFilter={filter} onChange={handleFilterChange} />
+          </div>
+
+          <TransactionList
+            transactions={filteredTransactions}
+            categories={categories}
+            isLoading={isLoading}
+            currentPage={currentPage}
+            pageSize={10}
+            totalItems={filteredTransactions.length}
+            onPageChange={setCurrentPage}
+          />
+        </div>
       </div>
-    </div>
+
+      {token && (
+        <CreateTransactionModal
+          open={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onCreated={handleTransactionCreated}
+          categories={categories}
+          token={token}
+        />
+      )}
+    </>
   );
 }

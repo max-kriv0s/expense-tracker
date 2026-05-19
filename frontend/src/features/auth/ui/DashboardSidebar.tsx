@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
+import { LogOut } from 'lucide-react';
 import { authApi } from '@/features/auth/api/authApi';
 import { Button } from '@/shared/ui/button';
 import type { User } from '@/entities/user/model/types';
@@ -54,21 +55,19 @@ export function DashboardSidebar() {
 
       <div className="border-t pt-4 mt-4">
         {user && (
-          <div className="mb-3">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-semibold shrink-0">
-                {user.name.charAt(0).toUpperCase()}
-              </div>
-              <div className="min-w-0">
-                <p className="text-sm font-medium truncate">{user.name}</p>
-                <p className="text-xs text-muted-foreground truncate">{user.email}</p>
-              </div>
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-semibold shrink-0">
+              {user.name.charAt(0).toUpperCase()}
             </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-medium truncate">{user.name}</p>
+              <p className="text-xs text-muted-foreground truncate">{user.email}</p>
+            </div>
+            <Button variant="ghost" size="icon" onClick={handleLogout} title="Выйти">
+              <LogOut className="w-4 h-4" />
+            </Button>
           </div>
         )}
-        <Button variant="ghost" size="sm" className="w-full justify-start" onClick={handleLogout}>
-          Выйти
-        </Button>
       </div>
     </div>
   );
