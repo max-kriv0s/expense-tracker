@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import Link from 'next/link';
 import { Dialog } from '@/shared/ui/dialog';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
@@ -108,9 +109,9 @@ export function CreateTransactionModal({
           {categories.length === 0 ? (
             <p className="text-sm text-muted-foreground py-2">
               Нет категорий — сначала создайте их на странице{' '}
-              <a href="/dashboard/categories" className="underline hover:text-foreground">
+              <Link href="/dashboard/categories" className="underline hover:text-foreground">
                 Категории
-              </a>
+              </Link>
             </p>
           ) : (
             <select

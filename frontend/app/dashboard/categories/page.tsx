@@ -1,17 +1,18 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { Plus } from 'lucide-react';
+import { useAuth } from '@/features/auth/model/useAuth';
 import { categoriesApi } from '@/features/categories/api/categoriesApi';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
+import { Skeleton } from '@/shared/ui/skeleton';
 import { ApiError } from '@/shared/api/client';
 import type { Category } from '@/entities/category/model/types';
 
 export default function CategoriesPage() {
-  const router = useRouter();
-  const [token, setToken] = useState<string | null>(null);
+  const token = useAuth();
+
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [newName, setNewName] = useState('');
@@ -19,19 +20,17 @@ export default function CategoriesPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const stored = localStorage.getItem('access_token');
-    if (!stored) { router.replace('/login'); return; }
-    setToken(stored);
-    categoriesApi.getAll(stored)
+    if (!token) return;
+    categoriesApi.getAll(token)
       .then(setCategories)
       .catch((err) => {
         if (err instanceof ApiError && err.status === 401) {
           localStorage.removeItem('access_token');
-          router.replace('/login');
+          window.location.replace('/login');
         }
       })
       .finally(() => setIsLoading(false));
-  }, [router]);
+  }, [token]);
 
   const handleAdd = async () => {
     if (!newName.trim() || !token) return;
@@ -54,7 +53,6 @@ export default function CategoriesPage() {
     <div className="max-w-lg">
       <h1 className="text-2xl font-semibold mb-6">Категории</h1>
 
-      {/* Форма добавления */}
       <div className="flex gap-2 mb-6">
         <Input
           placeholder="Название категории"
@@ -70,9 +68,12 @@ export default function CategoriesPage() {
 
       {error && <p className="text-sm text-destructive mb-4">{error}</p>}
 
-      {/* Список */}
       {isLoading ? (
-        <p className="text-sm text-muted-foreground">Загрузка...</p>
+        <div className="space-y-2">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <Skeleton key={i} className="h-11 w-full" />
+          ))}
+        </div>
       ) : categories.length === 0 ? (
         <p className="text-sm text-muted-foreground">Нет категорий</p>
       ) : (

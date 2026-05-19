@@ -44,7 +44,6 @@ export function DashboardSidebar() {
               <Button
                 variant={isActive ? 'secondary' : 'ghost'}
                 className="w-full justify-start"
-                asChild={false}
               >
                 {label}
               </Button>

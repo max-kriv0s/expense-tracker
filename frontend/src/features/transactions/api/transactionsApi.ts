@@ -1,6 +1,5 @@
 import { apiClient } from '@/shared/api/client';
 import type { Transaction, TransactionSummary, TransactionType } from '@/entities/transaction/model/types';
-import type { Category } from '@/entities/category/model/types';
 import type { TransactionFilter } from '@/features/transactions/model/types';
 
 export type CreateTransactionPayload = {
@@ -22,9 +21,6 @@ export const transactionsApi = {
       `/transactions/summary?month=${month}&year=${year}`,
       token,
     ),
-
-  getCategories: (token: string) =>
-    apiClient.get<Category[]>('/categories', token),
 
   create: (token: string, payload: CreateTransactionPayload) =>
     apiClient.post<Transaction>('/transactions', payload, token),

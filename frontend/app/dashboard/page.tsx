@@ -1,9 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { Plus } from 'lucide-react';
+import { useAuth } from '@/features/auth/model/useAuth';
 import { transactionsApi } from '@/features/transactions/api/transactionsApi';
+import { categoriesApi } from '@/features/categories/api/categoriesApi';
 import { SummaryCards } from '@/features/transactions/ui/SummaryCards';
 import { TransactionFilters } from '@/features/transactions/ui/TransactionFilters';
 import { TransactionList } from '@/features/transactions/ui/TransactionList';
@@ -20,8 +21,11 @@ const MONTH_NAMES = [
 ];
 
 export default function DashboardPage() {
-  const router = useRouter();
-  const [token, setToken] = useState<string | null>(null);
+  const token = useAuth();
+
+  // Фиксируем дату один раз при монтировании, чтобы fetch и label были согласованы
+  const [now] = useState(() => new Date());
+
   const [summary, setSummary] = useState<TransactionSummary | null>(null);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -29,31 +33,19 @@ export default function DashboardPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    const stored = localStorage.getItem('access_token');
-    if (!stored) {
-      router.replace('/login');
-    } else {
-      setToken(stored);
-    }
-  }, [router]);
-
-  useEffect(() => {
     if (!token) return;
-
-    const now = new Date();
-    const month = now.getMonth() + 1;
-    const year = now.getFullYear();
 
     setIsLoading(true);
     setError(null);
 
     Promise.all([
-      transactionsApi.getSummary(token, month, year),
+      transactionsApi.getSummary(token, now.getMonth() + 1, now.getFullYear()),
       transactionsApi.getAll(token),
-      transactionsApi.getCategories(token),
+      categoriesApi.getAll(token),
     ])
       .then(([summaryData, txData, catData]) => {
         setSummary(summaryData);
@@ -64,13 +56,15 @@ export default function DashboardPage() {
         if (err instanceof ApiError && err.status === 401) {
           localStorage.removeItem('access_token');
           localStorage.removeItem('refresh_token');
-          router.replace('/login');
+          // useAuth перенаправит на /login при следующем монтировании,
+          // но токен уже удалён — достаточно перезагрузить
+          window.location.replace('/login');
         } else {
           setError(err instanceof Error ? err.message : 'Ошибка загрузки данных');
         }
       })
       .finally(() => setIsLoading(false));
-  }, [token, router]);
+  }, [token, now, retryCount]);
 
   const handleFilterChange = (f: TransactionFilter) => {
     setFilter(f);
@@ -80,9 +74,7 @@ export default function DashboardPage() {
   const handleTransactionCreated = (tx: Transaction) => {
     setTransactions((prev) => [tx, ...prev]);
     setIsModalOpen(false);
-    // обновляем сводку
     if (token) {
-      const now = new Date();
       transactionsApi
         .getSummary(token, now.getMonth() + 1, now.getFullYear())
         .then(setSummary)
@@ -95,19 +87,15 @@ export default function DashboardPage() {
   const filteredTransactions =
     filter === 'ALL' ? transactions : transactions.filter((t) => t.type === filter);
 
-  const now = new Date();
   const monthLabel = `${MONTH_NAMES[now.getMonth()]} ${now.getFullYear()}`;
 
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center h-64 gap-4">
         <p className="text-destructive text-sm">{error}</p>
-        <button
-          className="text-sm underline text-muted-foreground"
-          onClick={() => setToken((t) => t)}
-        >
+        <Button variant="outline" size="sm" onClick={() => setRetryCount((c) => c + 1)}>
           Попробовать снова
-        </button>
+        </Button>
       </div>
     );
   }
@@ -137,21 +125,18 @@ export default function DashboardPage() {
             isLoading={isLoading}
             currentPage={currentPage}
             pageSize={10}
-            totalItems={filteredTransactions.length}
             onPageChange={setCurrentPage}
           />
         </div>
       </div>
 
-      {token && (
-        <CreateTransactionModal
-          open={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          onCreated={handleTransactionCreated}
-          categories={categories}
-          token={token}
-        />
-      )}
+      <CreateTransactionModal
+        open={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onCreated={handleTransactionCreated}
+        categories={categories}
+        token={token}
+      />
     </>
   );
 }

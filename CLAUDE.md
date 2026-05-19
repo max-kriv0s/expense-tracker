@@ -37,29 +37,43 @@ frontend/
 │   │   ├── layout.tsx          # Центрированный layout для auth-страниц
 │   │   ├── login/page.tsx
 │   │   └── register/page.tsx
+│   ├── dashboard/
+│   │   ├── layout.tsx          # Dashboard layout (sidebar + main)
+│   │   ├── page.tsx            # Главная страница (транзакции)
+│   │   └── categories/page.tsx
 │   ├── layout.tsx              # Root layout
 │   └── page.tsx                # Редирект на /login
 └── src/
-    ├── features/               # Бизнес-фичи (auth, expenses, etc.)
-    │   └── auth/
-    │       ├── api/            # Вызовы API (authApi.ts)
-    │       ├── model/          # Схемы zod, типы форм
-    │       └── ui/             # React-компоненты фичи (LoginForm, RegisterForm)
-    ├── entities/               # Доменные сущности
-    │   └── user/
-    │       └── model/types.ts  # User, AuthTokens
+    ├── widgets/                # Составные блоки UI (компонуют несколько фич)
+    │   └── sidebar/ui/         # DashboardSidebar
+    ├── features/               # Бизнес-фичи
+    │   ├── auth/
+    │   │   ├── api/            # authApi.ts
+    │   │   ├── model/          # useAuth.ts, схемы zod
+    │   │   └── ui/             # LoginForm, RegisterForm
+    │   ├── transactions/
+    │   │   ├── api/            # transactionsApi.ts
+    │   │   ├── model/          # types.ts, schemas.ts
+    │   │   └── ui/             # TransactionList, TransactionItem, ...
+    │   └── categories/
+    │       └── api/            # categoriesApi.ts
+    ├── entities/               # Доменные сущности (только типы)
+    │   ├── user/model/types.ts
+    │   ├── transaction/model/types.ts
+    │   └── category/model/types.ts
     └── shared/                 # Переиспользуемое между слоями
-        ├── api/client.ts       # Базовый fetch-клиент
+        ├── api/client.ts       # Базовый fetch-клиент (ApiError)
         ├── lib/utils.ts        # Утилиты (cn)
-        └── ui/                 # shadcn/ui компоненты (Button, Input, Label, Card)
+        └── ui/                 # shadcn/ui компоненты
 ```
 
 ### FSD правила
-- Импорты идут только вниз по слоям: `features` → `entities` → `shared`.
+- Импорты идут только вниз по слоям: `widgets` → `features` → `entities` → `shared`.
 - Внутри слоя — кросс-импорты запрещены (features не импортируют другие features).
-- Алиасы tsconfig: `@/features/*`, `@/entities/*`, `@/shared/*`.
+- Алиасы tsconfig: `@/widgets/*`, `@/features/*`, `@/entities/*`, `@/shared/*`.
 - Новые shadcn компоненты добавлять в `src/shared/ui/`.
-- Новые фичи (expenses, categories) создавать по образцу `src/features/auth/`.
+- Новые фичи создавать по образцу `src/features/auth/`.
+- Составные layout-компоненты (sidebar, header), использующие несколько фич — в `src/widgets/`.
 
 ### UI компоненты
 - Библиотека: shadcn/ui (компоненты написаны вручную в `src/shared/ui/`)
@@ -117,6 +131,7 @@ docs: update CLAUDE.md with commit convention
 - Описание на **английском языке**, в повелительном наклонении («add», «fix», «remove»).
 - Не использовать заглавную букву в начале и точку в конце.
 - Если коммит закрывает задачу, добавить `Closes #N` в тело коммита.
+- **Не создавать коммиты без явного согласия пользователя.** После завершения задачи показать изменения и дождаться одобрения перед `git commit`.
 
 ## Development Guidelines
 - Типы, используемые в обоих приложениях, поддерживать в `backend/src/types/index.ts`.

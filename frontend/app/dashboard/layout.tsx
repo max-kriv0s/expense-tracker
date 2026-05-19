@@ -1,4 +1,4 @@
-import { DashboardSidebar } from '@/features/auth/ui/DashboardSidebar';
+import { DashboardSidebar } from '@/widgets/sidebar/ui/DashboardSidebar';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (

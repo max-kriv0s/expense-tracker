@@ -10,7 +10,6 @@ type TransactionListProps = {
   isLoading: boolean;
   currentPage: number;
   pageSize: number;
-  totalItems: number;
   onPageChange: (page: number) => void;
 };
 
@@ -20,10 +19,9 @@ export function TransactionList({
   isLoading,
   currentPage,
   pageSize,
-  totalItems,
   onPageChange,
 }: TransactionListProps) {
-  const totalPages = Math.ceil(totalItems / pageSize);
+  const totalPages = Math.ceil(transactions.length / pageSize);
   const paginatedItems = transactions.slice((currentPage - 1) * pageSize, currentPage * pageSize);
   const categoryMap = new Map(categories.map((c) => [c.id, c]));
 

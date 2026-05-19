@@ -17,7 +17,9 @@ export function Dialog({ open, onClose, title, children, className }: DialogProp
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
-  }, [open, onClose]);
+    // onClose намеренно исключён из зависимостей: нас интересует только смена open
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
 
   if (!open) return null;
 
