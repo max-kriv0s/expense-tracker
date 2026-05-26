@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { Skeleton } from '@/shared/ui/skeleton';
 import { Pagination } from '@/shared/ui/pagination';
 import { TransactionItem } from '@/features/transactions/ui/TransactionItem';
@@ -23,7 +24,7 @@ export function TransactionList({
 }: TransactionListProps) {
   const totalPages = Math.ceil(transactions.length / pageSize);
   const paginatedItems = transactions.slice((currentPage - 1) * pageSize, currentPage * pageSize);
-  const categoryMap = new Map(categories.map((c) => [c.id, c]));
+  const categoryMap = useMemo(() => new Map(categories.map((c) => [c.id, c])), [categories]);
 
   if (isLoading) {
     return (

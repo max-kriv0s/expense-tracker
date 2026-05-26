@@ -26,6 +26,7 @@ export default function CategoriesPage() {
       .catch((err) => {
         if (err instanceof ApiError && err.status === 401) {
           localStorage.removeItem('access_token');
+          localStorage.removeItem('refresh_token');
           window.location.replace('/login');
         }
       })
@@ -47,7 +48,7 @@ export default function CategoriesPage() {
     }
   };
 
-  if (token === null) return null;
+  if (!token) return null;
 
   return (
     <div className="max-w-lg">

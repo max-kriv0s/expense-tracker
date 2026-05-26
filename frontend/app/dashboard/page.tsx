@@ -82,7 +82,7 @@ export default function DashboardPage() {
     }
   };
 
-  if (token === null) return null;
+  if (!token) return null;
 
   const filteredTransactions =
     filter === 'ALL' ? transactions : transactions.filter((t) => t.type === filter);

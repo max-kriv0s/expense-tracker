@@ -1,14 +1,12 @@
 import type { Transaction } from '@/entities/transaction/model/types';
 import type { Category } from '@/entities/category/model/types';
 import { Badge } from '@/shared/ui/badge';
+import { formatCurrency } from '@/shared/lib/utils';
 
 type TransactionItemProps = {
   transaction: Transaction;
   category: Category | undefined;
 };
-
-const formatCurrency = (amount: number) =>
-  new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(amount);
 
 const formatDate = (dateStr: string) =>
   new Date(dateStr).toLocaleDateString('ru-RU');
