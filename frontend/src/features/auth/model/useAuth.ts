@@ -3,8 +3,9 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-export function useAuth(): string | null {
-  const [token, setToken] = useState<string | null>(null);
+// undefined = токен ещё не проверен / не найден (идёт редирект), string = токен готов
+export function useAuth(): string | undefined {
+  const [token, setToken] = useState<string | undefined>(undefined);
   const router = useRouter();
 
   useEffect(() => {

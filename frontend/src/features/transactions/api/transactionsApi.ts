@@ -1,6 +1,5 @@
 import { apiClient } from '@/shared/api/client';
 import type { Transaction, TransactionSummary, TransactionType } from '@/entities/transaction/model/types';
-import type { TransactionFilter } from '@/features/transactions/model/types';
 
 export type CreateTransactionPayload = {
   amount: number;
@@ -11,10 +10,8 @@ export type CreateTransactionPayload = {
 };
 
 export const transactionsApi = {
-  getAll: (token: string, filter?: TransactionFilter) => {
-    const qs = filter && filter !== 'ALL' ? `?type=${filter}` : '';
-    return apiClient.get<Transaction[]>(`/transactions${qs}`, token);
-  },
+  getAll: (token: string) =>
+    apiClient.get<Transaction[]>('/transactions', token),
 
   getSummary: (token: string, month: number, year: number) =>
     apiClient.get<TransactionSummary>(

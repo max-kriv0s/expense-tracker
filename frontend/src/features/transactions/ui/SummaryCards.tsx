@@ -1,14 +1,12 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Skeleton } from '@/shared/ui/skeleton';
+import { formatCurrency } from '@/shared/lib/utils';
 import type { TransactionSummary } from '@/entities/transaction/model/types';
 
 type SummaryCardsProps = {
   summary: TransactionSummary | null;
   isLoading: boolean;
 };
-
-const formatCurrency = (amount: number) =>
-  new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(amount);
 
 export function SummaryCards({ summary, isLoading }: SummaryCardsProps) {
   const cards = [
