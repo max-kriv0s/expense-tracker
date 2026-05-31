@@ -7,6 +7,11 @@ import { Transaction } from '../../../../types';
 export class CreateTransactionHandler implements ICommandHandler<CreateTransactionCommand> {
   constructor(private readonly prisma: PrismaService) {}
 
+  /**
+   * Создаёт транзакцию в БД и возвращает её с конвертированной суммой.
+   * @param command - Данные новой транзакции.
+   * @returns Созданная транзакция; `amount` приведён к `number` из `Decimal`.
+   */
   async execute(command: CreateTransactionCommand): Promise<Transaction> {
     const { userId, amount, type, date, categoryId, description } = command;
     const raw = await this.prisma.transaction.create({

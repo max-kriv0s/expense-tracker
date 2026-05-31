@@ -8,6 +8,12 @@ import { Transaction } from '../../../../types';
 export class UpdateTransactionHandler implements ICommandHandler<UpdateTransactionCommand> {
   constructor(private readonly prisma: PrismaService) {}
 
+  /**
+   * Обновляет только переданные поля транзакции.
+   * @param command - Идентификатор транзакции, владелец и изменяемые поля.
+   * @returns Обновлённая транзакция; `amount` приведён к `number` из `Decimal`.
+   * @throws {NotFoundException} Если транзакция не найдена или не принадлежит пользователю.
+   */
   async execute(command: UpdateTransactionCommand): Promise<Transaction> {
     const { id, userId, amount, type, date, categoryId, description } = command;
 

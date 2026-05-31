@@ -7,6 +7,11 @@ import { Transaction } from '../../../../types';
 export class GetTransactionsHandler implements IQueryHandler<GetTransactionsQuery> {
   constructor(private readonly prisma: PrismaService) {}
 
+  /**
+   * Возвращает список транзакций пользователя, применяя переданные фильтры.
+   * @param query - Параметры фильтрации: диапазон дат, тип, категория.
+   * @returns Массив транзакций, отсортированных по дате убывания; `amount` приведён к `number`.
+   */
   async execute(query: GetTransactionsQuery): Promise<Transaction[]> {
     const { userId, dateFrom, dateTo, type, categoryId } = query;
 

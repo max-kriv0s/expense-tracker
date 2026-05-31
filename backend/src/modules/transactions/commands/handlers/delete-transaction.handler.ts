@@ -8,6 +8,12 @@ import { Transaction } from '../../../../types';
 export class DeleteTransactionHandler implements ICommandHandler<DeleteTransactionCommand> {
   constructor(private readonly prisma: PrismaService) {}
 
+  /**
+   * Удаляет транзакцию из БД после проверки владельца.
+   * @param command - Идентификатор транзакции и идентификатор владельца.
+   * @returns Удалённая транзакция; `amount` приведён к `number` из `Decimal`.
+   * @throws {NotFoundException} Если транзакция не найдена или не принадлежит пользователю.
+   */
   async execute(command: DeleteTransactionCommand): Promise<Transaction> {
     const { id, userId } = command;
 
