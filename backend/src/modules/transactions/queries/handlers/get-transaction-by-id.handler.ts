@@ -8,6 +8,12 @@ import { Transaction } from '../../../../types';
 export class GetTransactionByIdHandler implements IQueryHandler<GetTransactionByIdQuery> {
   constructor(private readonly prisma: PrismaService) {}
 
+  /**
+   * Ищет транзакцию по `id` и `userId` одновременно — исключает доступ к чужим записям.
+   * @param query - UUID транзакции и идентификатор владельца.
+   * @returns Найденная транзакция; `amount` приведён к `number`.
+   * @throws {NotFoundException} Если транзакция не найдена или принадлежит другому пользователю.
+   */
   async execute(query: GetTransactionByIdQuery): Promise<Transaction> {
     const { id, userId } = query;
     const raw = await this.prisma.transaction.findFirst({ where: { id, userId } });

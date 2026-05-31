@@ -7,6 +7,12 @@ import { TransactionSummary } from '../../../../types';
 export class GetTransactionsSummaryHandler implements IQueryHandler<GetTransactionsSummaryQuery> {
   constructor(private readonly prisma: PrismaService) {}
 
+  /**
+   * Агрегирует транзакции за указанный месяц и возвращает суммы по типам.
+   * Период вычисляется в UTC: от первого числа месяца до первого числа следующего (не включительно).
+   * @param query - Пользователь, месяц (1–12) и год.
+   * @returns Объект с полями `totalIncome`, `totalExpense` и `balance` (разница).
+   */
   async execute(query: GetTransactionsSummaryQuery): Promise<TransactionSummary> {
     const { userId, month, year } = query;
 
