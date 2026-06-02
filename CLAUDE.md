@@ -50,48 +50,6 @@ fix/auth-token-refresh
 chore/update-dependencies
 ```
 
-## Pull Request Convention
-
-### Когда создавать PR
-
-Перед созданием PR убедиться, что ветка актуальна (`git rebase main` или `git merge main`).
-
-### Заголовок PR
-
-Следует формату Conventional Commits: `<type>(<scope>): <description>`
-
-Примеры:
-
-```
-feat(frontend): implement main dashboard and categories pages
-fix(auth): handle expired refresh token correctly
-chore(db): add initial prisma migrations
-```
-
-### Тело PR
-
-Структура:
-
-```
-## Summary
-- Краткий bullet-point список: что реализовано / изменено
-
-## Details
-Подробности по нетривиальным решениям (архитектура, обходы, компромиссы).
-
-## Test plan
-- [ ] Checklist того, что нужно проверить вручную
-```
-
-### Правила
-
-- Один PR — одна логическая задача.
-- Описание пишется на **русском языке** (title — на английском, по Conventional Commits).
-- После мержа ветку удалять (`git branch -d <branch>`).
-- **Не создавать PR без явного запроса пользователя.**
-
----
-
 ## Обновление docs
 
 При добавлении функционала, проверяй документацию в @.claude/docs/\* и актуализируй
