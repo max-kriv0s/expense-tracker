@@ -92,41 +92,6 @@ chore(db): add initial prisma migrations
 
 ---
 
-<important if="Нужно написать commit">
-## Git Commit Convention
+## Обновление docs
 
-Используем **Conventional Commits**. Формат: `<type>(<scope>): <description>`
-
-### Типы (type)
-
-- `feat` — новая функциональность
-- `fix` — исправление бага
-- `refactor` — рефакторинг без изменения поведения
-- `style` — форматирование, отступы (без изменения логики)
-- `test` — тесты
-- `docs` — документация
-- `chore` — инфраструктура, зависимости, конфиги
-
-### Области (scope)
-
-- `auth`, `expenses`, `categories`, `transactions` — фичи
-- `backend`, `frontend` — приложения в целом
-- `db`, `api`, `ui` — технические слои
-
-### Примеры
-
-```
-feat(auth): add JWT refresh token rotation
-fix(expenses): handle empty category on create
-chore(db): add postgres docker-compose config
-docs: update CLAUDE.md with commit convention
-```
-
-### Правила
-
-- Описание на **английском языке**, в повелительном наклонении («add», «fix», «remove»).
-- Не использовать заглавную букву в начале и точку в конце.
-- Если коммит закрывает задачу, добавить `Closes #N` в тело коммита.
-- **Не создавать коммиты без явного согласия пользователя.** После завершения задачи показать изменения и дождаться одобрения перед `git commit`.
-
-</important>
+При добавлении функционала, проверяй документацию в @.claude/docs/\* и актуализируй
