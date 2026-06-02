@@ -1,7 +1,7 @@
 ---
 name: commit
 description: Создать git-коммит по Conventional Commits с проверкой изменений и подтверждением пользователя
-model: Sonnet 4.6
+model: claude-sonnet-4-6
 allowed-tools:
   - Bash(git status)
   - Bash(git diff*)
