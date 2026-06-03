@@ -1,7 +1,7 @@
 ---
 name: pr
 description: Создать Pull Request на GitHub по шаблону проекта с заданным заголовком и веткой
-argument-hint: "[title] [base-branch, default main]"
+argument-hint: <title> <base-branch, default main>
 model: claude-sonnet-4-6
 allowed-tools:
   - Bash(git status)
