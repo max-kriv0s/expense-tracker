@@ -28,9 +28,9 @@ export function TransactionList({
 
   if (isLoading) {
     return (
-      <div className="space-y-2">
+      <div className="space-y-2 px-3 py-2">
         {Array.from({ length: 5 }).map((_, i) => (
-          <Skeleton key={i} className="h-14 w-full" />
+          <Skeleton key={i} className="h-14 w-full rounded-xl" />
         ))}
       </div>
     );
@@ -46,7 +46,7 @@ export function TransactionList({
 
   return (
     <div>
-      <ul className="divide-y divide-border">
+      <ul className="px-1 py-1">
         {paginatedItems.map((tx) => (
           <TransactionItem key={tx.id} transaction={tx} category={categoryMap.get(tx.categoryId)} />
         ))}

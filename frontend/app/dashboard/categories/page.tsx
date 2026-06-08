@@ -52,7 +52,7 @@ export default function CategoriesPage() {
 
   return (
     <div className="max-w-lg">
-      <h1 className="text-2xl font-semibold mb-6">Категории</h1>
+      <h1 className="text-2xl font-bold mb-7">Категории</h1>
 
       <div className="flex gap-2 mb-6">
         <Input
@@ -60,31 +60,49 @@ export default function CategoriesPage() {
           value={newName}
           onChange={(e) => setNewName(e.target.value)}
           onKeyDown={(e) => { if (e.key === 'Enter') handleAdd(); }}
+          className="rounded-xl"
         />
-        <Button onClick={handleAdd} disabled={isAdding || !newName.trim()}>
-          <Plus className="w-4 h-4 mr-2" />
+        <Button
+          onClick={handleAdd}
+          disabled={isAdding || !newName.trim()}
+          className="rounded-xl shrink-0 gap-2"
+        >
+          <Plus className="w-4 h-4" />
           Добавить
         </Button>
       </div>
 
-      {error && <p className="text-sm text-destructive mb-4">{error}</p>}
+      {error && (
+        <div className="rounded-xl px-4 py-3 text-sm text-red-600 bg-red-50 mb-4">
+          {error}
+        </div>
+      )}
 
       {isLoading ? (
         <div className="space-y-2">
           {Array.from({ length: 4 }).map((_, i) => (
-            <Skeleton key={i} className="h-11 w-full" />
+            <Skeleton key={i} className="h-12 w-full rounded-xl" />
           ))}
         </div>
       ) : categories.length === 0 ? (
-        <p className="text-sm text-muted-foreground">Нет категорий</p>
+        <p className="text-sm text-muted-foreground">Нет категорий — создайте первую выше</p>
       ) : (
-        <ul className="divide-y divide-border rounded-lg border">
-          {categories.map((cat) => (
-            <li key={cat.id} className="px-4 py-3 text-sm">
-              {cat.name}
-            </li>
-          ))}
-        </ul>
+        <div
+          className="rounded-2xl overflow-hidden"
+          style={{ backgroundColor: '#ffffff', boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}
+        >
+          <ul className="divide-y divide-border/60">
+            {categories.map((cat) => (
+              <li key={cat.id} className="flex items-center gap-3 px-4 py-3.5">
+                <div
+                  className="w-3 h-3 rounded-full shrink-0"
+                  style={{ backgroundColor: cat.color ?? '#94a3b8' }}
+                />
+                <span className="text-sm font-medium">{cat.name}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
       )}
     </div>
   );

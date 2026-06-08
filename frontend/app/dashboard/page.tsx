@@ -103,10 +103,10 @@ export default function DashboardPage() {
   return (
     <>
       <div>
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-semibold capitalize">Обзор за {monthLabel}</h1>
-          <Button onClick={() => setIsModalOpen(true)}>
-            <Plus className="w-4 h-4 mr-2" />
+        <div className="flex items-center justify-between mb-7">
+          <h1 className="text-2xl font-bold">Обзор за {monthLabel}</h1>
+          <Button onClick={() => setIsModalOpen(true)} className="rounded-xl h-10 px-4 text-sm font-semibold gap-2">
+            <Plus className="w-4 h-4" />
             Новая транзакция
           </Button>
         </div>
@@ -114,19 +114,24 @@ export default function DashboardPage() {
         <SummaryCards summary={summary} isLoading={isLoading} />
 
         <div className="mt-8">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-medium">Транзакции</h2>
-            <TransactionFilters activeFilter={filter} onChange={handleFilterChange} />
-          </div>
+          <div
+            className="rounded-2xl p-1"
+            style={{ backgroundColor: '#ffffff', boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}
+          >
+            <div className="flex items-center justify-between px-4 py-3 border-b border-border/60">
+              <h2 className="text-base font-bold">Транзакции</h2>
+              <TransactionFilters activeFilter={filter} onChange={handleFilterChange} />
+            </div>
 
-          <TransactionList
-            transactions={filteredTransactions}
-            categories={categories}
-            isLoading={isLoading}
-            currentPage={currentPage}
-            pageSize={10}
-            onPageChange={setCurrentPage}
-          />
+            <TransactionList
+              transactions={filteredTransactions}
+              categories={categories}
+              isLoading={isLoading}
+              currentPage={currentPage}
+              pageSize={10}
+              onPageChange={setCurrentPage}
+            />
+          </div>
         </div>
       </div>
 
