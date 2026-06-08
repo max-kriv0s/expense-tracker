@@ -1,4 +1,3 @@
-import { Button } from '@/shared/ui/button';
 import type { TransactionFilter } from '@/features/transactions/model/types';
 
 type TransactionFiltersProps = {
@@ -14,16 +13,19 @@ const FILTERS: { value: TransactionFilter; label: string }[] = [
 
 export function TransactionFilters({ activeFilter, onChange }: TransactionFiltersProps) {
   return (
-    <div className="flex gap-2">
+    <div className="flex gap-1 p-1 rounded-xl" style={{ backgroundColor: 'hsl(220 14% 92%)' }}>
       {FILTERS.map(({ value, label }) => (
-        <Button
+        <button
           key={value}
-          variant={activeFilter === value ? 'default' : 'outline'}
-          size="sm"
           onClick={() => onChange(value)}
+          className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all duration-150 ${
+            activeFilter === value
+              ? 'bg-white text-foreground shadow-sm'
+              : 'text-muted-foreground hover:text-foreground'
+          }`}
         >
           {label}
-        </Button>
+        </button>
       ))}
     </div>
   );

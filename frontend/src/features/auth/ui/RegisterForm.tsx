@@ -4,20 +4,12 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/shared/ui/card';
 import { Checkbox } from '@/shared/ui/checkbox';
 import { authApi } from '@/features/auth/api/authApi';
 import { registerSchema, type RegisterFormValues } from '@/features/auth/model/schemas';
+import { Wallet } from 'lucide-react';
 
 export function RegisterForm() {
   const router = useRouter();
@@ -50,90 +42,112 @@ export function RegisterForm() {
   };
 
   return (
-    <Card className="w-full max-w-sm">
-      <CardHeader>
-        <CardTitle>Регистрация</CardTitle>
-        <CardDescription>Создайте аккаунт для начала работы</CardDescription>
-      </CardHeader>
+    <div
+      className="w-full max-w-sm rounded-2xl p-8"
+      style={{ backgroundColor: '#ffffff', boxShadow: '0 4px 24px rgba(0,0,0,0.08)' }}
+    >
+      {/* Logo mark */}
+      <div className="flex items-center gap-2.5 mb-8">
+        <div
+          className="w-9 h-9 rounded-xl flex items-center justify-center"
+          style={{ backgroundColor: '#16172A' }}
+        >
+          <Wallet className="w-4 h-4 text-white" />
+        </div>
+        <span className="font-semibold text-foreground">Expense Tracker</span>
+      </div>
 
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <CardContent className="flex flex-col gap-4">
-          {errors.root && (
-            <p className="text-sm text-destructive">{errors.root.message}</p>
-          )}
+      <h1 className="text-2xl font-bold text-foreground mb-1">Создать аккаунт</h1>
+      <p className="text-sm text-muted-foreground mb-7">
+        Заполните форму для регистрации
+      </p>
 
-          <div className="flex flex-col gap-1.5">
-            <Label htmlFor="name">Имя</Label>
-            <Input
-              id="name"
-              type="text"
-              placeholder="Иван Иванов"
-              autoComplete="name"
-              {...register('name')}
-            />
-            {errors.name && (
-              <p className="text-xs text-destructive">{errors.name.message}</p>
-            )}
+      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+        {errors.root && (
+          <div className="rounded-xl px-4 py-3 text-sm text-red-600 bg-red-50">
+            {errors.root.message}
           </div>
+        )}
 
-          <div className="flex flex-col gap-1.5">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="you@example.com"
-              autoComplete="email"
-              {...register('email')}
-            />
-            {errors.email && (
-              <p className="text-xs text-destructive">{errors.email.message}</p>
-            )}
-          </div>
-
-          <div className="flex flex-col gap-1.5">
-            <Label htmlFor="password">Пароль</Label>
-            <Input
-              id="password"
-              type="password"
-              placeholder="••••••••"
-              autoComplete="new-password"
-              {...register('password')}
-            />
-            {errors.password && (
-              <p className="text-xs text-destructive">{errors.password.message}</p>
-            )}
-          </div>
-          <Checkbox
-            id="agreedToTerms"
-            label={
-              <>
-                Согласен с{' '}
-                <Link href="/terms" className="text-primary hover:underline">
-                  пользовательским соглашением
-                </Link>{' '}
-                и{' '}
-                <Link href="/privacy" className="text-primary hover:underline">
-                  политикой обработки данных
-                </Link>
-              </>
-            }
-            error={errors.agreedToTerms?.message}
-            {...register('agreedToTerms')}
+        <div className="flex flex-col gap-1.5">
+          <Label htmlFor="name" className="text-sm font-medium">Имя</Label>
+          <Input
+            id="name"
+            type="text"
+            placeholder="Иван Иванов"
+            autoComplete="name"
+            className="rounded-xl"
+            {...register('name')}
           />
-        </CardContent>
+          {errors.name && (
+            <p className="text-xs text-red-500">{errors.name.message}</p>
+          )}
+        </div>
 
-        <CardFooter className="flex flex-col gap-3">
-          <Button type="submit" className="w-full" disabled={isSubmitting}>
-            {isSubmitting ? 'Регистрация...' : 'Создать аккаунт'}
-          </Button>
-          <p className="text-sm text-muted-foreground">
-            Уже есть аккаунт?{' '}
-            <Link href="/login" className="text-primary hover:underline">
-              Войти
-            </Link>
-          </p>
-        </CardFooter>
+        <div className="flex flex-col gap-1.5">
+          <Label htmlFor="email" className="text-sm font-medium">Email</Label>
+          <Input
+            id="email"
+            type="email"
+            placeholder="you@example.com"
+            autoComplete="email"
+            className="rounded-xl"
+            {...register('email')}
+          />
+          {errors.email && (
+            <p className="text-xs text-red-500">{errors.email.message}</p>
+          )}
+        </div>
+
+        <div className="flex flex-col gap-1.5">
+          <Label htmlFor="password" className="text-sm font-medium">Пароль</Label>
+          <Input
+            id="password"
+            type="password"
+            placeholder="••••••••"
+            autoComplete="new-password"
+            className="rounded-xl"
+            {...register('password')}
+          />
+          {errors.password && (
+            <p className="text-xs text-red-500">{errors.password.message}</p>
+          )}
+        </div>
+
+        <Checkbox
+          id="agreedToTerms"
+          label={
+            <>
+              Согласен с{' '}
+              <Link href="/terms" className="text-foreground font-medium hover:underline">
+                пользовательским соглашением
+              </Link>{' '}
+              и{' '}
+              <Link href="/privacy" className="text-foreground font-medium hover:underline">
+                политикой обработки данных
+              </Link>
+            </>
+          }
+          error={errors.agreedToTerms?.message}
+          {...register('agreedToTerms')}
+        />
+
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="w-full h-11 rounded-xl text-sm font-semibold text-white transition-opacity disabled:opacity-60 mt-1"
+          style={{ backgroundColor: '#16172A' }}
+        >
+          {isSubmitting ? 'Регистрация...' : 'Создать аккаунт'}
+        </button>
+
+        <p className="text-sm text-muted-foreground text-center">
+          Уже есть аккаунт?{' '}
+          <Link href="/login" className="text-foreground font-medium hover:underline">
+            Войти
+          </Link>
+        </p>
       </form>
-    </Card>
+    </div>
   );
 }
