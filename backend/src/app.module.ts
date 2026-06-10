@@ -8,6 +8,6 @@ import { CategoriesModule } from './modules/categories/categories.module';
 import { TransactionsModule } from './modules/transactions/transactions.module';
 
 @Module({
-  imports: [CqrsModule, PassportModule, UsersModule, AuthModule, CategoriesModule, TransactionsModule],
+	imports: [CqrsModule, PassportModule, UsersModule, AuthModule, CategoriesModule, TransactionsModule],
 })
 export class AppModule {}
