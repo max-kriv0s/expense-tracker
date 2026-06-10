@@ -3,19 +3,19 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-// undefined = токен ещё не проверен / не найден (идёт редирект), string = токен готов
+// undefined = токен не найден (идёт редирект), string = токен готов
 export function useAuth(): string | undefined {
-  const [token, setToken] = useState<string | undefined>(undefined);
   const router = useRouter();
+  const [token] = useState<string | undefined>(() => {
+    if (typeof window === 'undefined') return undefined;
+    return localStorage.getItem('access_token') ?? undefined;
+  });
 
   useEffect(() => {
-    const stored = localStorage.getItem('access_token');
-    if (!stored) {
+    if (!token) {
       router.replace('/login');
-    } else {
-      setToken(stored);
     }
-  }, [router]);
+  }, [token, router]);
 
   return token;
 }

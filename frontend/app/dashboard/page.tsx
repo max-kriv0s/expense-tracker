@@ -39,9 +39,6 @@ export default function DashboardPage() {
   useEffect(() => {
     if (!token) return;
 
-    setIsLoading(true);
-    setError(null);
-
     Promise.all([
       transactionsApi.getSummary(token, now.getMonth() + 1, now.getFullYear()),
       transactionsApi.getAll(token),
@@ -51,6 +48,7 @@ export default function DashboardPage() {
         setSummary(summaryData);
         setTransactions(txData);
         setCategories(catData);
+        setError(null);
       })
       .catch((err) => {
         if (err instanceof ApiError && err.status === 401) {
@@ -93,7 +91,7 @@ export default function DashboardPage() {
     return (
       <div className="flex flex-col items-center justify-center h-64 gap-4">
         <p className="text-destructive text-sm">{error}</p>
-        <Button variant="outline" size="sm" onClick={() => setRetryCount((c) => c + 1)}>
+        <Button variant="outline" size="sm" onClick={() => { setIsLoading(true); setRetryCount((c) => c + 1); }}>
           Попробовать снова
         </Button>
       </div>

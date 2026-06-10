@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
 import { Dialog } from '@/shared/ui/dialog';
@@ -35,7 +35,7 @@ export function CreateTransactionModal({
   const {
     register,
     handleSubmit,
-    watch,
+    control,
     setValue,
     reset,
     formState: { errors, isSubmitting },
@@ -44,7 +44,7 @@ export function CreateTransactionModal({
     defaultValues: { type: 'EXPENSE', date: today() },
   });
 
-  const selectedType = watch('type');
+  const selectedType = useWatch({ control, name: 'type', defaultValue: 'EXPENSE' });
 
   const handleClose = () => {
     reset({ type: 'EXPENSE', date: today() });
